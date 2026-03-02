@@ -49,8 +49,10 @@ jobs:
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
+        env:
+          ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ env.ROLE_ARN }}
           role-session-name: github-agriconnect-backend-release
           aws-region: ${{ env.AWS_REGION }}
 
@@ -106,8 +108,10 @@ jobs:
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
+        env:
+          ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: ${{ env.ROLE_ARN }}
           role-session-name: github-agriconnect-ai-release
           aws-region: ${{ env.AWS_REGION }}
 
