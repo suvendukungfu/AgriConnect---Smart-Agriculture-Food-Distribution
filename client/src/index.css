@@ -1,95 +1,129 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@source "./src";
+
+@theme {
+  --color-border: hsl(var(--border) / <alpha-value>);
+  --color-input: hsl(var(--input) / <alpha-value>);
+  --color-ring: hsl(var(--ring) / <alpha-value>);
+  --color-background: hsl(var(--background) / <alpha-value>);
+  --color-foreground: hsl(var(--foreground) / <alpha-value>);
+
+  --color-primary: hsl(var(--primary) / <alpha-value>);
+  --color-primary-foreground: hsl(var(--primary-foreground) / <alpha-value>);
+
+  --color-secondary: hsl(var(--secondary) / <alpha-value>);
+  --color-secondary-foreground: hsl(var(--secondary-foreground) / <alpha-value>);
+
+  --color-success: hsl(var(--success) / <alpha-value>);
+  --color-success-foreground: hsl(var(--success-foreground) / <alpha-value>);
+
+  --color-warning: hsl(var(--warning) / <alpha-value>);
+  --color-warning-foreground: hsl(var(--warning-foreground) / <alpha-value>);
+
+  --color-destructive: hsl(var(--destructive) / <alpha-value>);
+  --color-destructive-foreground: hsl(var(--destructive-foreground) / <alpha-value>);
+
+  --color-muted: hsl(var(--muted) / <alpha-value>);
+  --color-muted-foreground: hsl(var(--muted-foreground) / <alpha-value>);
+
+  --color-accent: hsl(var(--accent) / <alpha-value>);
+  --color-accent-foreground: hsl(var(--accent-foreground) / <alpha-value>);
+
+  --color-popover: hsl(var(--popover) / <alpha-value>);
+  --color-popover-foreground: hsl(var(--popover-foreground) / <alpha-value>);
+
+  --color-card: hsl(var(--card) / <alpha-value>);
+  --color-card-foreground: hsl(var(--card-foreground) / <alpha-value>);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
 
 @layer base {
   :root {
-    --background: 210 40% 98%;      /* Soft Pearl #F8FAFC */
-    --foreground: 222.2 84% 4.9%;   /* Deep Slate #0F172A */
-    
+    --background: 210 40% 98%;
+    --foreground: 222.2 84% 4.9%;
+
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
-    
+
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    
-    /* Primary: Agri Green */
-    --primary: 160 84% 39%;         /* Emerald 600 */
+
+    --primary: 160 84% 39%;
     --primary-foreground: 210 40% 98%;
-    
-    /* Secondary: Harvest Orange */
-    --secondary: 38 92% 50%;        /* Amber 500 */
+
+    --secondary: 38 92% 50%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-    
-    /* Semantic Status */
+
     --success: 160 84% 39%;
     --success-foreground: 210 40% 98%;
-    
+
     --warning: 38 92% 50%;
     --warning-foreground: 222.2 47.4% 11.2%;
-    
-    --destructive: 0 84.2% 60.2%;   /* Rose 500 */
+
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    
-    /* UI Structure */
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
-    
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 160 84% 39%;
-    
-    --radius: 1rem; /* 2xl border radius */
+
+    --radius: 1rem;
   }
 
-  /* Dark Mode First Approach */
   .dark {
-    --background: 222.2 47.4% 11.2%; /* Deep OLED Slate */
+    --background: 222.2 47.4% 11.2%;
     --foreground: 210 40% 98%;
-    
+
     --card: 222.2 47.4% 11.2%;
     --card-foreground: 210 40% 98%;
-    
+
     --popover: 222.2 47.4% 11.2%;
     --popover-foreground: 210 40% 98%;
-    
-    /* Primary: Agri Green */
+
     --primary: 160 84% 39%;
     --primary-foreground: 210 40% 98%;
-    
-    /* Secondary: Harvest Orange */
+
     --secondary: 38 92% 50%;
     --secondary-foreground: 222.2 47.4% 11.2%;
-    
-    /* Semantic Status */
+
     --success: 160 84% 39%;
     --success-foreground: 210 40% 98%;
-    
+
     --warning: 38 92% 50%;
     --warning-foreground: 222.2 47.4% 11.2%;
-    
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
-    
+
     --muted: 215 27.9% 16.9%;
     --muted-foreground: 217.9 10.6% 64.9%;
-    
+
     --accent: 215 27.9% 16.9%;
     --accent-foreground: 210 40% 98%;
-    
+
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 160 84% 39%;
   }
-}
 
-@layer base {
   * {
-    @apply border-border;
+    border-color: var(--color-border);
   }
+
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
   }
 }

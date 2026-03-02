@@ -1,8 +1,8 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, HTMLMotionProps } from 'framer-motion';
 
-export interface AgrisCardProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AgrisCardProps extends HTMLMotionProps<"div"> {
   glass?: boolean;
   hoverLogic?: boolean;
 }

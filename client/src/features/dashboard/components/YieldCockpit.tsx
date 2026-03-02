@@ -1,12 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { AgrisCard } from '@/components/shared/AgrisCard';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, CloudRain, Sprout, WifiOff, TrendingUp } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { AIConfidenceChart } from '@/components/charts/AIConfidenceChart';
+import { normalizeYieldData } from '@/lib/ai/yieldModel';
 
 // Dummy API call to simulate React Query fetching
+const generateDummyForecast = () => {
+  const data = [];
+  let baseYield = 14000;
+  for (let i = 0; i < 90; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() + i);
+    
+    // Simulate some noise and trend
+    baseYield += (Math.random() - 0.4) * 100;
+    
+    data.push({
+      date: date.toISOString(),
+      predictedYield: baseYield,
+      lowerBound: baseYield - (Math.random() * 500 + 500),
+      upperBound: baseYield + (Math.random() * 500 + 500),
+      riskScore: Math.max(0, Math.min(100, 30 + (Math.random() - 0.5) * 20 + (i > 60 ? 20 : 0)))
+    });
+  }
+  return data;
+};
+
 const fetchYieldPrediction = async () => {
   return new Promise((resolve) => setTimeout(() => resolve({
     predictedValue: 14500,
@@ -14,6 +37,7 @@ const fetchYieldPrediction = async () => {
     changePercent: 12,
     risks: [{ type: 'weather', msg: 'Heavy rain in 48h' }],
     marketPrice: 240, // per quintal
+    rawForecastData: generateDummyForecast()
   }), 1200));
 };
 
@@ -37,10 +61,12 @@ export function YieldCockpit() {
     staleTime: 1000 * 60 * 60, // 1 hour stale time
   });
 
-  if (isLoading) return <CockpitSkeleton />;
-
   // @ts-ignore
-  const { predictedValue, confidence, changePercent, marketPrice } = data || {};
+  const { predictedValue, confidence, changePercent, marketPrice, rawForecastData } = data || {};
+
+  const chartData = useMemo(() => normalizeYieldData(rawForecastData || []), [rawForecastData]);
+
+  if (isLoading) return <CockpitSkeleton />;
 
   return (
     <section className="flex flex-col gap-4 w-full max-w-2xl mx-auto" aria-label="Yield Overview">
@@ -113,6 +139,14 @@ export function YieldCockpit() {
             </span>
           </div>
 
+        </div>
+
+        {/* AI Chart Section */}
+        <div className="mt-8 pt-4 border-t border-border/50">
+          <h3 className="text-xs font-semibold text-muted-foreground mb-4 font-heading tracking-wide">
+            90-DAY YIELD TRAJECTORY & CONFIDENCE MATRIX
+          </h3>
+          <AIConfidenceChart data={chartData} height={240} />
         </div>
       </AgrisCard>
     </section>
