@@ -68,8 +68,11 @@ resource "aws_iam_role" "github_actions" {
         Federated = "arn:aws:iam::oidc-provider/token.actions.githubusercontent.com"
       }
       Condition = {
+        StringEquals = {
+          "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+        }
         StringLike = {
-          "token.actions.githubusercontent.com:sub" = "repo:suvendukungfu/AgriConnect*"
+          "token.actions.githubusercontent.com:sub" = "repo:suvendukungfu/AgriConnect:*"
         }
       }
     }]
