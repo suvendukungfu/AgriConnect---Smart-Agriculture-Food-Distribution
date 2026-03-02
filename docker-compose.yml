@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  ai-engine:
+    build: 
+      context: ./ai_engine
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ai_engine/models:/app/models
+    environment:
+      - LOG_LEVEL=INFO
+    networks:
+      - agriconnect_network
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: agriconnect_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - agriconnect_network
+
+networks:
+  agriconnect_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
