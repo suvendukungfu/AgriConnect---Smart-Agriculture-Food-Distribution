@@ -72,15 +72,15 @@ resource "aws_iam_role" "github_actions" {
           "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
         }
         StringLike = {
-          "token.actions.githubusercontent.com:sub" = "repo:suvendukungfu/AgriConnect:*"
+          "token.actions.githubusercontent.com:sub" = "repo:suvendukungfu/AgriConnect:ref:refs/heads/main"
         }
       }
     }]
   })
 }
 
-resource "aws_iam_policy" "github_actions_ecr_push" {
-  name = "${var.project_name}-${var.environment}-ecr-push"
+resource "aws_iam_policy" "github_actions_policy" {
+  name = "${var.project_name}-${var.environment}-github-actions-policy"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -90,10 +90,20 @@ resource "aws_iam_policy" "github_actions_ecr_push" {
         Action = [
           "ecr:GetAuthorizationToken",
           "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
           "ecr:InitiateLayerUpload",
           "ecr:UploadLayerPart",
           "ecr:CompleteLayerUpload",
           "ecr:PutImage"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters"
         ]
         Resource = "*"
       }
@@ -101,7 +111,7 @@ resource "aws_iam_policy" "github_actions_ecr_push" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "github_ecr_push" {
-  policy_arn = aws_iam_policy.github_actions_ecr_push.arn
+resource "aws_iam_role_policy_attachment" "github_actions_attach" {
+  policy_arn = aws_iam_policy.github_actions_policy.arn
   role       = aws_iam_role.github_actions.name
 }
