@@ -171,7 +171,7 @@ export function YieldCockpit() {
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground mt-3 flex items-start gap-1.5 leading-snug">
-                <AlertCircle className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" />
+                <AlertCircle className="w-4 h-4 text-warning shrink-0 mt-0.5" />
                 Heavy rain expected in 48 hours.
               </p>
             </div>

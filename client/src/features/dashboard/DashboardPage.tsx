@@ -87,7 +87,7 @@ export default function DashboardPage() {
                 <ul className="space-y-3">
                   <li className="flex flex-col gap-3 p-3.5 bg-card-foreground/5 rounded-xl border border-border/50 hover:bg-card-foreground/10 transition-colors">
                     <div className="flex items-start gap-2.5">
-                       <span className="flex-shrink-0 mt-1 w-2 h-2 rounded-full bg-destructive shadow-[0_0_8px_hsl(var(--destructive))]"></span>
+                       <span className="shrink-0 mt-1 w-2 h-2 rounded-full bg-destructive shadow-[0_0_8px_hsl(var(--destructive))]"></span>
                        <span className="text-sm font-medium text-foreground leading-snug">Fertilizer levels below 40ppm detected in Sector A.</span>
                     </div>
                     <button className="text-xs font-semibold bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition shadow-sm self-start ml-4.5 focus:ring-2 focus:ring-ring focus:outline-none">
@@ -96,7 +96,7 @@ export default function DashboardPage() {
                   </li>
                   <li className="flex flex-col gap-3 p-3.5 bg-card-foreground/5 rounded-xl border border-border/50 hover:bg-card-foreground/10 transition-colors">
                      <div className="flex items-start gap-2.5">
-                       <span className="flex-shrink-0 mt-1 w-2 h-2 rounded-full bg-warning shadow-[0_0_8px_hsl(var(--warning))]"></span>
+                       <span className="shrink-0 mt-1 w-2 h-2 rounded-full bg-warning shadow-[0_0_8px_hsl(var(--warning))]"></span>
                        <span className="text-sm font-medium text-foreground leading-snug">Schedule irrigation adjustment before anticipated heavy rain.</span>
                     </div>
                     <button className="text-xs font-semibold bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/80 transition shadow-sm self-start ml-4.5 flex items-center gap-1.5 focus:ring-2 focus:ring-ring focus:outline-none border border-border/50">

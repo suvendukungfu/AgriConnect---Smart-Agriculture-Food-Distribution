@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@source "./src";
 
 @theme {
   --color-border: hsl(var(--border) / <alpha-value>);
