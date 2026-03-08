@@ -45,15 +45,34 @@ export interface Farm {
   ownerId: string;
 }
 
-export interface Crop {
-  id: string;
-  name: string;
-  variety: string;
-  sowingDate: string;
-  expectedHarvestDate: string;
-  plotId: string;
-  status: 'sowing' | 'vegetative' | 'flowering' | 'fruiting' | 'ripening' | 'harvested';
-}
+export const CropCycleSchema = z.object({
+  id: z.string(),
+  cropName: z.string(),
+  variety: z.string(),
+  sowingDate: z.string(),
+  expectedHarvestDate: z.string(),
+  plotId: z.string(),
+  seedSource: z.string().optional(),
+  status: z.enum(['seeded', 'germination', 'vegetative', 'flowering', 'grain_filling', 'harvested']),
+  yieldPrediction: z.number().optional(),
+  confidenceScore: z.number().optional(),
+});
+
+export type CropCycle = z.infer<typeof CropCycleSchema>;
+
+export const CropEventSchema = z.object({
+  id: z.string(),
+  cropCycleId: z.string(),
+  eventType: z.enum(['sowing', 'irrigation', 'fertilizer', 'pesticide', 'disease_report', 'harvest']),
+  date: z.string(),
+  notes: z.string().optional(),
+  quantity: z.number().optional(),
+  cost: z.number().optional(),
+  images: z.array(z.string()).optional(),
+  inputsUsed: z.string().optional(),
+});
+
+export type CropEvent = z.infer<typeof CropEventSchema>;
 
 export interface WeatherData {
   temp: number;

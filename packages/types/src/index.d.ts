@@ -53,15 +53,73 @@ export interface Farm {
     plots: Plot[];
     ownerId: string;
 }
-export interface Crop {
+export declare const CropCycleSchema: z.ZodObject<{
+    id: z.ZodString;
+    cropName: z.ZodString;
+    variety: z.ZodString;
+    sowingDate: z.ZodString;
+    expectedHarvestDate: z.ZodString;
+    plotId: z.ZodString;
+    seedSource: z.ZodOptional<z.ZodString>;
+    status: z.ZodEnum<["seeded", "germination", "vegetative", "flowering", "grain_filling", "harvested"]>;
+    yieldPrediction: z.ZodOptional<z.ZodNumber>;
+    confidenceScore: z.ZodOptional<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
     id: string;
-    name: string;
+    status: "seeded" | "germination" | "vegetative" | "flowering" | "grain_filling" | "harvested";
+    cropName: string;
     variety: string;
     sowingDate: string;
     expectedHarvestDate: string;
     plotId: string;
-    status: 'sowing' | 'vegetative' | 'flowering' | 'fruiting' | 'ripening' | 'harvested';
-}
+    seedSource?: string | undefined;
+    yieldPrediction?: number | undefined;
+    confidenceScore?: number | undefined;
+}, {
+    id: string;
+    status: "seeded" | "germination" | "vegetative" | "flowering" | "grain_filling" | "harvested";
+    cropName: string;
+    variety: string;
+    sowingDate: string;
+    expectedHarvestDate: string;
+    plotId: string;
+    seedSource?: string | undefined;
+    yieldPrediction?: number | undefined;
+    confidenceScore?: number | undefined;
+}>;
+export type CropCycle = z.infer<typeof CropCycleSchema>;
+export declare const CropEventSchema: z.ZodObject<{
+    id: z.ZodString;
+    cropCycleId: z.ZodString;
+    eventType: z.ZodEnum<["sowing", "irrigation", "fertilizer", "pesticide", "disease_report", "harvest"]>;
+    date: z.ZodString;
+    notes: z.ZodOptional<z.ZodString>;
+    quantity: z.ZodOptional<z.ZodNumber>;
+    cost: z.ZodOptional<z.ZodNumber>;
+    images: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    inputsUsed: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    date: string;
+    cropCycleId: string;
+    eventType: "sowing" | "irrigation" | "fertilizer" | "pesticide" | "disease_report" | "harvest";
+    notes?: string | undefined;
+    quantity?: number | undefined;
+    cost?: number | undefined;
+    images?: string[] | undefined;
+    inputsUsed?: string | undefined;
+}, {
+    id: string;
+    date: string;
+    cropCycleId: string;
+    eventType: "sowing" | "irrigation" | "fertilizer" | "pesticide" | "disease_report" | "harvest";
+    notes?: string | undefined;
+    quantity?: number | undefined;
+    cost?: number | undefined;
+    images?: string[] | undefined;
+    inputsUsed?: string | undefined;
+}>;
+export type CropEvent = z.infer<typeof CropEventSchema>;
 export interface WeatherData {
     temp: number;
     humidity: number;
