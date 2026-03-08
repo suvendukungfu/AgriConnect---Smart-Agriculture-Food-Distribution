@@ -1,0 +1,24 @@
+{
+  "name": "agriconnect-monorepo",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "start:server": "npm run start --workspace server"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "packages/config/*",
+    "server"
+  ],
+  "devDependencies": {
+    "husky": "^9.0.0",
+    "prettier": "^3.0.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.0.0",
+    "turbo": "^2.0.0"
+  }
+}
