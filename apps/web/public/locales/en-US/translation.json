@@ -1,0 +1,18 @@
+{
+  "common": {
+    "welcome": "Welcome to AgriConnect",
+    "dashboard": "Dashboard",
+    "admin": "Admin Panel",
+    "logout": "Logout",
+    "region": "Region",
+    "farmerCockpit": "Farmer Cockpit"
+  },
+  "dashboard": {
+    "predictedYield": "Predicted Yield",
+    "aiConfidence": "AI Confidence",
+    "weatherRisk": "Weather Risk",
+    "soilHealth": "Soil Health",
+    "forecastTitle": "90-Day Yield Forecast & Confidence Matrix",
+    "forecastSubtitle": "AI-powered projection with risk overlays and dynamic confidence intervals."
+  }
+}
