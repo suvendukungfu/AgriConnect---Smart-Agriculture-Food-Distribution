@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import type { StateCreator } from 'zustand/vanilla';
 
 interface UIState {
   sidebarOpen: boolean;
@@ -8,14 +9,13 @@ interface UIState {
   setLanguage: (lang: 'en' | 'hi' | 'ta') => void;
 }
 
+const createUIState: StateCreator<UIState> = (set) => ({
+  sidebarOpen: false,
+  language: 'en',
+  toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+  setLanguage: (lang) => set({ language: lang }),
+});
+
 export const useUIStore = create<UIState>()(
-  persist(
-    (set) => ({
-      sidebarOpen: false,
-      language: 'en',
-      toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
-      setLanguage: (lang) => set({ language: lang }),
-    }),
-    { name: 'agriconnect-ui-storage' }
-  )
+  persist(createUIState, { name: 'agriconnect-ui-storage' })
 );

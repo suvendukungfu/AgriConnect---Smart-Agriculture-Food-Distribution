@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { AgrisCard } from '@/components/shared/AgrisCard';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, CloudRain, Sprout, WifiOff, TrendingUp } from 'lucide-react';
+import { AlertCircle, CloudRain, Sprout, WifiOff, TrendingUp, DollarSign, Activity, Percent } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { AIConfidenceChart } from '@/components/charts/AIConfidenceChart';
 import { normalizeYieldData } from '@/lib/ai/yieldModel';
+import { SkeletonChartLoader } from '@/components/charts/SkeletonChartLoader';
+
+// Lazy load the chart for performance
+const AIConfidenceChart = React.lazy(() => import('@/components/charts/AIConfidenceChart').then(m => ({ default: m.AIConfidenceChart })));
 
 // Dummy API call to simulate React Query fetching
 const generateDummyForecast = () => {
@@ -68,105 +71,196 @@ export function YieldCockpit() {
 
   if (isLoading) return <CockpitSkeleton />;
 
+  const containerVariants: any = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants: any = {
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  };
+
   return (
-    <section className="flex flex-col gap-4 w-full max-w-2xl mx-auto" aria-label="Yield Overview">
+    <section className="flex flex-col gap-6 w-full" aria-label="Yield Overview">
       
       {/* Offline / Sync Banner */}
       <AnimatePresence>
         {offline && (
           <motion.div 
             initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            className="flex items-center gap-2 bg-warning/10 text-warning px-4 py-2 rounded-lg text-sm font-medium"
+            className="flex items-center gap-2 bg-warning/10 text-warning px-4 py-3 rounded-xl text-sm font-medium border border-warning/20 shadow-sm"
           >
             <WifiOff className="w-4 h-4" /> Operating in Offline Mode. Syncing paused.
           </motion.div>
         )}
       </AnimatePresence>
 
-      <AgrisCard className="p-6 relative overflow-visible" glass hoverLogic>
-        {/* Top: Header & AI Confidence */}
-        <div className="flex justify-between items-start mb-6">
-          <h2 className="text-muted-foreground font-semibold uppercase tracking-wider text-xs">
-            Predicted Harvest Value
-          </h2>
-          <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
-            AI Confidence: {confidence}%
-          </Badge>
-        </div>
+      {/* Hero KPI Grid */}
+      <motion.div 
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+      >
+        {/* KPI 1: Predicted Harvest Value */}
+        <motion.div variants={itemVariants}>
+          <AgrisCard className="p-5 flex flex-col justify-between h-full shadow-soft" glass hoverLogic>
+            <div className="flex justify-between items-start mb-4">
+              <span className="text-sm font-medium text-muted-foreground flex items-center">
+                Predicted Yield
+              </span>
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <DollarSign className="w-4 h-4 text-primary" />
+              </div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-foreground">
+                ${predictedValue?.toLocaleString()}
+              </div>
+              <div className="text-sm font-medium text-success flex items-center mt-2 bg-success/10 w-fit px-2 py-0.5 rounded-md">
+                <TrendingUp className="w-3.5 h-3.5 mr-1" /> +{changePercent}% vs last cycle
+              </div>
+            </div>
+          </AgrisCard>
+        </motion.div>
 
-        {/* Center: Profit Hero Metric */}
-        <div className="flex flex-col mb-8">
-          <div className="flex items-baseline gap-3">
-            <span className="text-5xl font-extrabold tracking-tight text-foreground">
-              ${predictedValue?.toLocaleString()}
-            </span>
-            <span className="text-success font-medium flex items-center text-sm">
-              <TrendingUp className="w-4 h-4 mr-1" /> +{changePercent}%
-            </span>
+        {/* KPI 2: AI Confidence */}
+        <motion.div variants={itemVariants}>
+          <AgrisCard className="p-5 flex flex-col justify-between h-full shadow-soft" glass hoverLogic>
+            <div className="flex justify-between items-start mb-4">
+              <span className="text-sm font-medium text-muted-foreground flex items-center">
+                AI Confidence
+              </span>
+              <div className="p-2 bg-accent/10 rounded-lg">
+                <Percent className="w-4 h-4 text-accent" />
+              </div>
+            </div>
+            <div>
+              <div className="flex items-end gap-2">
+                <span className="text-3xl font-bold text-foreground">{confidence}%</span>
+              </div>
+              <div className="w-full bg-border rounded-full h-2 mt-3 overflow-hidden">
+                <div className="bg-accent h-2 rounded-full" style={{ width: `${confidence}%` }} />
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">High accuracy threshold</p>
+            </div>
+          </AgrisCard>
+        </motion.div>
+
+        {/* KPI 3: Weather Risk */}
+        <motion.div variants={itemVariants}>
+          <AgrisCard className="p-5 flex flex-col justify-between h-full shadow-soft" glass hoverLogic>
+            <div className="flex justify-between items-start mb-4">
+              <span className="text-sm font-medium text-muted-foreground flex items-center">
+                Weather Risk
+              </span>
+              <div className="p-2 bg-warning/10 rounded-lg">
+                <CloudRain className="w-4 h-4 text-warning" />
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <Badge variant="destructive" className="bg-warning/20 text-warning border-warning/50 text-sm py-1 font-semibold">
+                  Elevated
+                </Badge>
+              </div>
+              <p className="text-sm text-muted-foreground mt-3 flex items-start gap-1.5 leading-snug">
+                <AlertCircle className="w-4 h-4 text-warning flex-shrink-0 mt-0.5" />
+                Heavy rain expected in 48 hours.
+              </p>
+            </div>
+          </AgrisCard>
+        </motion.div>
+
+        {/* KPI 4: Soil Health */}
+        <motion.div variants={itemVariants}>
+          <AgrisCard className="p-5 flex flex-col justify-between h-full shadow-soft" glass hoverLogic>
+            <div className="flex justify-between items-start mb-4">
+              <span className="text-sm font-medium text-muted-foreground flex items-center">
+                Soil Health
+              </span>
+              <div className="p-2 bg-success/10 rounded-lg">
+                <Sprout className="w-4 h-4 text-success" />
+              </div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-foreground">
+                6.2 <span className="text-lg text-muted-foreground font-normal">pH</span>
+              </div>
+              <div className="flex items-center justify-between mt-3 text-sm">
+                <span className="text-success font-medium bg-success/10 px-2 py-0.5 rounded-md">Optimal</span>
+                <span className="text-muted-foreground text-xs">Updated 2h ago</span>
+              </div>
+            </div>
+          </AgrisCard>
+        </motion.div>
+      </motion.div>
+
+      {/* AI Chart Section */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, type: "spring", stiffness: 300, damping: 24 }}
+      >
+        <AgrisCard className="p-5 sm:p-6 overflow-hidden shadow-soft" glass hoverLogic>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <h3 className="text-lg font-bold text-foreground font-heading">
+                90-Day Yield Forecast & Confidence Matrix
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                AI-powered projection with risk overlays and dynamic confidence intervals.
+              </p>
+            </div>
+            <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
+               <div className="flex items-center gap-1.5 border border-border/50 px-2 py-1 rounded-md bg-card-foreground/5">
+                 <div className="w-2.5 h-2.5 rounded-full bg-primary" /> Yield
+               </div>
+               <div className="flex items-center gap-1.5 border border-border/50 px-2 py-1 rounded-md bg-card-foreground/5">
+                 <div className="w-2.5 h-2.5 rounded-full bg-warning" /> Risk
+               </div>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">Expected realization by Nov 15</p>
-        </div>
-
-        {/* Bottom: Telemetry Row */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-4 border-t border-border/50">
           
-          <div className="flex flex-col gap-1">
-            <span className="flex items-center text-xs font-semibold text-muted-foreground">
-              <CloudRain className="w-3 h-3 justify-center mr-1 text-sky-500" />
-              WEATHER RISK
-            </span>
-            <span className="text-sm font-medium text-warning flex items-center">
-              Elevated <AlertCircle className="w-3 h-3 ml-1" />
-            </span>
+          <div className="h-[320px] w-full mt-2 relative">
+            <Suspense fallback={<SkeletonChartLoader height={320} />}>
+              <AIConfidenceChart data={chartData} height={320} />
+            </Suspense>
           </div>
-
-          <div className="flex flex-col gap-1">
-            <span className="flex items-center text-xs font-semibold text-muted-foreground">
-              <Sprout className="w-3 h-3 mr-1 text-emerald-500" />
-              SOIL HEALTH
-            </span>
-            <span className="text-sm font-medium text-foreground">
-              pH 6.2 (Optimal)
-            </span>
-          </div>
-
-          <div className="flex flex-col gap-1 col-span-2 md:col-span-1 border-t md:border-t-0 pt-3 md:pt-0">
-            <span className="text-xs font-semibold text-muted-foreground">
-              MANDI MARKET TREND
-            </span>
-            <span className="text-sm font-medium text-foreground">
-              ${marketPrice}/qtl (Stable)
-            </span>
-          </div>
-
-        </div>
-
-        {/* AI Chart Section */}
-        <div className="mt-8 pt-4 border-t border-border/50">
-          <h3 className="text-xs font-semibold text-muted-foreground mb-4 font-heading tracking-wide">
-            90-DAY YIELD TRAJECTORY & CONFIDENCE MATRIX
-          </h3>
-          <AIConfidenceChart data={chartData} height={240} />
-        </div>
-      </AgrisCard>
+        </AgrisCard>
+      </motion.div>
     </section>
   );
 }
 
 function CockpitSkeleton() {
   return (
-    <AgrisCard className="p-6 w-full max-w-2xl mx-auto h-[280px]">
-      <div className="flex justify-between mb-8">
-        <Skeleton className="h-4 w-32" />
-        <Skeleton className="h-6 w-24 rounded-full" />
+    <section className="flex flex-col gap-6 w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[1,2,3,4].map((i) => (
+          <AgrisCard key={i} className="p-5 h-36">
+            <div className="flex justify-between mb-4">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-8 w-8 rounded-lg" />
+            </div>
+             <Skeleton className="h-8 w-24 mb-3" />
+             <Skeleton className="h-4 w-full" />
+          </AgrisCard>
+        ))}
       </div>
-      <Skeleton className="h-14 w-64 mb-4" />
-      <Skeleton className="h-4 w-40 mb-12" />
-      <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border/50">
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-        <Skeleton className="h-10 w-full" />
-      </div>
-    </AgrisCard>
+      <AgrisCard className="p-6 w-full h-[450px]">
+        <div className="mb-8">
+          <Skeleton className="h-6 w-64 mb-2" />
+          <Skeleton className="h-4 w-48" />
+        </div>
+        <SkeletonChartLoader height={320} />
+      </AgrisCard>
+    </section>
   );
 }

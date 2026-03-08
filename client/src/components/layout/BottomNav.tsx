@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Home, UploadCloud, Store, Bell, User, WifiOff } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useAuthStore } from '../../store/authStore';
+import { useAuth } from '@/context/AuthContext';
 
 export function BottomNav() {
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated } = useAuth();
   const location = useLocation();
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [syncQueueSize, setSyncQueueSize] = useState(0); // Mocking IndexedDB queue size

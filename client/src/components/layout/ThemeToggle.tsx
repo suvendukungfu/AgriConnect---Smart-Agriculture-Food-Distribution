@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { Moon, Sun, Monitor, Eye } from 'lucide-react';
-import { useAuthStore } from '../../store/authStore';
+import { useAuth } from '@/context/AuthContext';
 
 export function ThemeToggle({ className = '' }: { className?: string }) {
   const { theme, setTheme } = useTheme();
-  const { user } = useAuthStore();
+  const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
 
   // Avoid hydration mismatch on initial load
