@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Crop {
+  id            String     @id @default(uuid())
+  farmId        String // References farm-service Farm.id
+  name          String
+  variety       String?
+  plantingDate  DateTime
+  expectedYield Float? // In tons
+  status        CropStatus @default(GROWING)
+  healthScore   Float? // AI generated 0-100 indicating crop health
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  events CropEvent[]
+
+  @@index([farmId])
+}
+
+model CropEvent {
+  id          String    @id @default(uuid())
+  cropId      String
+  crop        Crop      @relation(fields: [cropId], references: [id], onDelete: Cascade)
+  type        EventType
+  date        DateTime
+  description String?
+
+  @@index([cropId])
+}
+
+enum CropStatus {
+  PLANNED
+  GROWING
+  READY_FOR_HARVEST
+  HARVESTED
+  ARCHIVED
+}
+
+enum EventType {
+  PLANTING
+  FERTILIZATION
+  IRRIGATION
+  PEST_CONTROL
+  HARVEST
+  INSPECTION
+  DISEASE_DETECTED
+}

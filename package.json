@@ -10,6 +10,8 @@
   },
   "workspaces": [
     "apps/*",
+    "gateway/*",
+    "services/*",
     "packages/*",
     "packages/config/*",
     "server"

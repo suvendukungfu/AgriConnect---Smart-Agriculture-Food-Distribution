@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: agriconnect
+
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+      - job_name: api-gateway
+        static_configs:
+          - targets: ["api-gateway:8080"]
+      - job_name: node-services
+        static_configs:
+          - targets:
+              - auth-service:4001
+              - user-service:4002
+              - farm-service:4003
+              - crop-service:4004
+              - marketplace-service:4005
+              - order-service:4006
+              - payment-service:4007
+              - notification-service:4008
+              - advisory-service:4009
+              - analytics-service:4010
+              - admin-service:4013
+      - job_name: python-services
+        static_configs:
+          - targets:
+              - ai-service:4012
+              - satellite-service:4011

@@ -1,0 +1,86 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopicList
+items:
+  - apiVersion: kafka.strimzi.io/v1beta2
+    kind: KafkaTopic
+    metadata:
+      name: farm.events
+      labels:
+        strimzi.io/cluster: agriconnect-kafka
+    spec:
+      partitions: 12
+      replicas: 3
+      config:
+        retention.ms: 604800000
+  - apiVersion: kafka.strimzi.io/v1beta2
+    kind: KafkaTopic
+    metadata:
+      name: crop.events
+      labels:
+        strimzi.io/cluster: agriconnect-kafka
+    spec:
+      partitions: 12
+      replicas: 3
+  - apiVersion: kafka.strimzi.io/v1beta2
+    kind: KafkaTopic
+    metadata:
+      name: marketplace.events
+      labels:
+        strimzi.io/cluster: agriconnect-kafka
+    spec:
+      partitions: 12
+      replicas: 3
+  - apiVersion: kafka.strimzi.io/v1beta2
+    kind: KafkaTopic
+    metadata:
+      name: order.events
+      labels:
+        strimzi.io/cluster: agriconnect-kafka
+    spec:
+      partitions: 12
+      replicas: 3
+  - apiVersion: kafka.strimzi.io/v1beta2
+    kind: KafkaTopic
+    metadata:
+      name: payment.events
+      labels:
+        strimzi.io/cluster: agriconnect-kafka
+    spec:
+      partitions: 12
+      replicas: 3
+  - apiVersion: kafka.strimzi.io/v1beta2
+    kind: KafkaTopic
+    metadata:
+      name: advisory.events
+      labels:
+        strimzi.io/cluster: agriconnect-kafka
+    spec:
+      partitions: 12
+      replicas: 3
+  - apiVersion: kafka.strimzi.io/v1beta2
+    kind: KafkaTopic
+    metadata:
+      name: ai.events
+      labels:
+        strimzi.io/cluster: agriconnect-kafka
+    spec:
+      partitions: 12
+      replicas: 3
+  - apiVersion: kafka.strimzi.io/v1beta2
+    kind: KafkaTopic
+    metadata:
+      name: satellite.events
+      labels:
+        strimzi.io/cluster: agriconnect-kafka
+    spec:
+      partitions: 12
+      replicas: 3
+  - apiVersion: kafka.strimzi.io/v1beta2
+    kind: KafkaTopic
+    metadata:
+      name: notification.events
+      labels:
+        strimzi.io/cluster: agriconnect-kafka
+    spec:
+      partitions: 12
+      replicas: 3

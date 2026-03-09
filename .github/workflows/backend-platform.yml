@@ -1,0 +1,101 @@
+name: Backend Platform CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'gateway/**'
+      - 'services/**'
+      - 'packages/shared-types/**'
+      - 'packages/shared-utils/**'
+      - 'infra/**'
+      - '.github/workflows/backend-platform.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'gateway/**'
+      - 'services/**'
+      - 'packages/shared-types/**'
+      - 'packages/shared-utils/**'
+      - 'infra/**'
+
+jobs:
+  lint-build-node:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - gateway/api-gateway
+          - services/auth-service
+          - services/user-service
+          - services/farm-service
+          - services/crop-service
+          - services/marketplace-service
+          - services/order-service
+          - services/payment-service
+          - services/notification-service
+          - services/advisory-service
+          - services/analytics-service
+          - services/admin-service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install
+        working-directory: ${{ matrix.target }}
+        run: npm install
+      - name: Build
+        working-directory: ${{ matrix.target }}
+        run: npm run build
+
+  build-python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - services/ai-service
+          - services/satellite-service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        working-directory: ${{ matrix.target }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Validate app import
+        working-directory: ${{ matrix.target }}
+        run: python -c "import app.main"
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: [lint-build-node, build-python]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build gateway image
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/api-gateway:${{ github.sha }} gateway/api-gateway
+      - name: Build auth image
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/auth-service:${{ github.sha }} services/auth-service
+
+  terraform-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Init
+        working-directory: infra/terraform
+        run: terraform init -backend=false
+      - name: Validate
+        working-directory: infra/terraform
+        run: terraform validate

@@ -1,0 +1,36 @@
+generator client { provider = "prisma-client-js" }
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model advisory_alerts {
+  id           String   @id @default(uuid())
+  farm_id       String
+  plot_id       String?
+  alert_type    String
+  severity      String
+  message       String
+  status        String   @default("active")
+  created_at    DateTime @default(now())
+  resolved_at   DateTime?
+
+  recommendations recommendations[]
+
+  @@index([farm_id, status])
+}
+
+model recommendations {
+  id              String   @id @default(uuid())
+  advisory_alert_id String?
+  farm_id          String
+  recommendation_type String
+  payload         Json
+  generated_by    String
+  created_at      DateTime @default(now())
+
+  advisory_alert  advisory_alerts? @relation(fields: [advisory_alert_id], references: [id], onDelete: SetNull)
+
+  @@index([farm_id, recommendation_type])
+}

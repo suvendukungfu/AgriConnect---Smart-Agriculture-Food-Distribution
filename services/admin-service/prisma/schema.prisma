@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model admin_root {
+  id         String   @id @default(uuid())
+  externalId String   @unique
+  status     String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("admin_root")
+}
+
+model audit_logs {
+  id        String   @id @default(uuid())
+  rootId    String
+  status    String
+  payload   Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([rootId])
+  @@map("audit_logs")
+}
+
+model moderation_actions {
+  id        String   @id @default(uuid())
+  rootId    String
+  kind      String
+  payload   Json?
+  createdAt DateTime @default(now())
+
+  @@index([rootId])
+  @@map("moderation_actions")
+}

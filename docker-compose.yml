@@ -1,35 +1,75 @@
 version: '3.8'
 
 services:
-  ai-engine:
-    build: 
-      context: ./ai_engine
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./ai_engine/models:/app/models
-    environment:
-      - LOG_LEVEL=INFO
-    networks:
-      - agriconnect_network
-
-  db:
+  postgres:
     image: postgres:15-alpine
+    container_name: agriconnect_postgres
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: agriconnect_ai
+      POSTGRES_USER: agriconnect
+      POSTGRES_PASSWORD: agriconnect_password
+      POSTGRES_DB: agriconnect
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - agriconnect_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agriconnect"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: agriconnect_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - agriconnect_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: agriconnect_zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - agriconnect_network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: agriconnect_kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - agriconnect_network
+
+  # Note: Microservices and API Gateway will be added here in a true prod environment
+  # For local development, we run the services independently connecting to these infra containers
+
+volumes:
+  postgres_data:
+  redis_data:
 
 networks:
   agriconnect_network:
     driver: bridge
-
-volumes:
-  postgres_data:

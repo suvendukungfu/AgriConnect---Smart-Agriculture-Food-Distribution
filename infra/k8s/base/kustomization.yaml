@@ -1,0 +1,8 @@
+resources:
+  - namespace.yaml
+  - ingress.yaml
+  - services.yaml
+  - hpa.yaml
+  - pdb.yaml
+  - networkpolicy.yaml
+  - secrets-template.yaml

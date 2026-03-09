@@ -1,0 +1,15 @@
+{
+  "name": "@agriconnect/shared-utils",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "kafkajs": "^2.2.4",
+    "pino": "^9.9.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

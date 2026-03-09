@@ -1,0 +1,29 @@
+generator client { provider = "prisma-client-js" }
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model fact_yield_metrics {
+  id         String   @id @default(uuid())
+  farm_id    String
+  crop_cycle_id String
+  metric_date DateTime
+  actual_yield Decimal? @db.Decimal(10, 2)
+  predicted_yield Decimal? @db.Decimal(10, 2)
+  created_at DateTime @default(now())
+
+  @@index([farm_id, metric_date])
+}
+
+model fact_market_metrics {
+  id          String   @id @default(uuid())
+  listing_id  String?
+  metric_date DateTime
+  avg_price   Decimal? @db.Decimal(10, 2)
+  total_volume Decimal? @db.Decimal(12, 2)
+  created_at  DateTime @default(now())
+
+  @@index([metric_date])
+}

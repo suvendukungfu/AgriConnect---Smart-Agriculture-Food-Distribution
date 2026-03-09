@@ -1,0 +1,47 @@
+generator client { provider = "prisma-client-js" }
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model orders {
+  id          String   @id @default(uuid())
+  buyer_id    String
+  seller_id   String
+  contract_id String?
+  status      String
+  total_amount Decimal @db.Decimal(12, 2)
+  currency    String   @default("INR")
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  deliveries  deliveries[]
+}
+
+model deliveries {
+  id          String   @id @default(uuid())
+  order_id    String
+  provider    String?
+  status      String
+  eta_at      DateTime?
+  delivered_at DateTime?
+
+  order       orders   @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  tracking_events tracking_events[]
+
+  @@index([order_id, status])
+}
+
+model tracking_events {
+  id          String   @id @default(uuid())
+  delivery_id String
+  event_type  String
+  location    String?
+  payload     Json?
+  event_at    DateTime
+
+  delivery    deliveries @relation(fields: [delivery_id], references: [id], onDelete: Cascade)
+
+  @@index([delivery_id, event_at])
+}

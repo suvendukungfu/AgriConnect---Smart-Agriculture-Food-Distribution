@@ -1,0 +1,54 @@
+generator client { provider = "prisma-client-js" }
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model listings {
+  id          String   @id @default(uuid())
+  seller_id   String
+  crop_cycle_id String?
+  title       String
+  description String?
+  quantity    Decimal  @db.Decimal(10, 2)
+  unit        String
+  price       Decimal  @db.Decimal(10, 2)
+  status      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  bids        bids[]
+  contracts   contracts[]
+
+  @@index([seller_id, status])
+}
+
+model bids {
+  id          String   @id @default(uuid())
+  listing_id  String
+  buyer_id    String
+  bid_price   Decimal  @db.Decimal(10, 2)
+  quantity    Decimal  @db.Decimal(10, 2)
+  status      String
+  created_at  DateTime @default(now())
+
+  listing     listings @relation(fields: [listing_id], references: [id], onDelete: Cascade)
+
+  @@index([listing_id, buyer_id])
+}
+
+model contracts {
+  id          String   @id @default(uuid())
+  listing_id  String
+  buyer_id    String
+  seller_id   String
+  agreed_price Decimal @db.Decimal(10, 2)
+  quantity    Decimal  @db.Decimal(10, 2)
+  status      String
+  created_at  DateTime @default(now())
+
+  listing     listings @relation(fields: [listing_id], references: [id], onDelete: Cascade)
+
+  @@index([listing_id])
+}
