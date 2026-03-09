@@ -42,7 +42,7 @@ export function BottomNav() {
   return (
     <nav 
       aria-label="Farmer Mobile Navigation"
-      className="fixed bottom-0 left-0 w-full z-50 md:hidden bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t border-border pb-safe"
+      className="fixed bottom-0 left-0 w-full z-50 md:hidden bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border-t border-border pb-safe"
     >
       {/* Offline Indicator Layer */}
       {isOffline && (
