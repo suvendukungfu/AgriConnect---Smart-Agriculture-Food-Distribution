@@ -3,12 +3,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useCrop, useCropEvents } from '@agriconnect/hooks';
 import { GrowthStageTracker } from '../components/GrowthStageTracker';
 import { CropTimeline } from '../components/CropTimeline';
+import { CropScanner } from '../components/CropScanner';
 import { Button, Card, Badge, Skeleton } from '@agriconnect/ui';
-import { ArrowLeft, Plus, Factory, Activity, Clock, Sprout } from 'lucide-react';
+import { ArrowLeft, Plus, Factory, Activity, Clock, Sprout, ScanLine } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
 
 export const CropDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [showScanner, setShowScanner] = React.useState(false);
 
   const { data: crop, isLoading: isCropLoading, isError: isCropError } = useCrop(id || '');
   const { data: events, isLoading: isEventsLoading } = useCropEvents(id || '');
@@ -59,12 +62,21 @@ export const CropDetailsPage: React.FC = () => {
           </div>
         </div>
         
-        <div className="flex gap-2 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <Button 
+            onClick={() => setShowScanner(true)}
+            className="w-full sm:w-auto font-bold bg-indigo-500 hover:bg-indigo-600 shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 text-white h-11 px-5 rounded-xl border border-indigo-400 group relative overflow-hidden"
+          >
+            <div className="absolute inset-0 w-full h-full bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+            <ScanLine className="w-5 h-5 mr-2" />
+            Scan Crop
+          </Button>
+
           <Button 
             onClick={() => navigate(`/crops/${crop.id}/events/create`)}
-            className="w-full sm:w-auto font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 h-10 px-4 rounded-xl"
+            className="w-full sm:w-auto font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 h-11 px-6 rounded-xl"
           >
-            <Plus className="w-4 h-4 mr-1.5" />
+            <Plus className="w-5 h-5 mr-1.5" />
             Log Activity
           </Button>
         </div>
@@ -175,6 +187,15 @@ export const CropDetailsPage: React.FC = () => {
         </div>
 
       </div>
+
+      <AnimatePresence>
+        {showScanner && (
+           <CropScanner 
+             cropName={`${crop.cropName} (${crop.plotId.toUpperCase()})`} 
+             onClose={() => setShowScanner(false)} 
+           />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

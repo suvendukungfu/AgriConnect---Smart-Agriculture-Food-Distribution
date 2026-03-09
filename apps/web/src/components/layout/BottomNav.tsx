@@ -95,7 +95,7 @@ export function BottomNav() {
                 {isActive && (
                   <motion.div
                     layoutId="bottom-nav-indicator"
-                    className="absolute -top-[1px] left-1/2 w-8 h-[3px] bg-primary rounded-b-full"
+                    className="absolute -top-px left-1/2 w-8 h-[3px] bg-primary rounded-b-full"
                     style={{ x: '-50%' }}
                     transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   />

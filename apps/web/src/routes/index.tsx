@@ -11,6 +11,11 @@ import { FarmManagementPage } from '../features/farms/pages/FarmManagementPage';
 import { AnalyticsPage } from '../features/analytics/pages/AnalyticsPage';
 import { AdvisoryPage } from '../features/advisory/pages/AdvisoryPage';
 
+import { FarmIntelligencePage } from '../features/intelligence/pages/FarmIntelligencePage';
+import { DiseaseScannerPage } from '../features/intelligence/pages/DiseaseScannerPage';
+
+import { FarmMapPage } from '../features/map/pages/FarmMapPage';
+
 import { CropsPage } from '../features/crops/pages/CropsPage';
 import { CreateCropPage } from '../features/crops/pages/CreateCropPage';
 import { CropDetailsPage } from '../features/crops/pages/CropDetailsPage';
@@ -51,6 +56,9 @@ export const AppRoutes: React.FC = () => {
 
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/advisory" element={<AdvisoryPage />} />
+          <Route path="/farm-intelligence" element={<FarmIntelligencePage />} />
+          <Route path="/disease-scanner" element={<DiseaseScannerPage />} />
+          <Route path="/farm-map" element={<FarmMapPage />} />
           <Route path="/marketplace" element={<div className="p-10 text-center font-bold">Marketplace - Coming Soon</div>} />
           <Route path="/finance" element={<div className="p-10 text-center font-bold">Finance - Coming Soon</div>} />
         </Route>

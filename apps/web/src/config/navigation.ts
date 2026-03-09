@@ -28,7 +28,10 @@ export const NAVIGATION_CONFIG: Record<Exclude<UserRole, null>, NavItem[]> = {
   farmer: [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['farmer'] },
     { name: 'My Farms', href: '/farms', icon: Tractor, roles: ['farmer'] },
+    { name: 'Farm Map', href: '/farm-map', icon: Map, roles: ['farmer'] },
     { name: 'Crop Cycle', href: '/crops', icon: Sprout, roles: ['farmer'] },
+    { name: 'Farm Intelligence', href: '/farm-intelligence', icon: BrainCircuit, roles: ['farmer'] },
+    { name: 'Disease Scanner', href: '/disease-scanner', icon: Activity, roles: ['farmer'] },
     { name: 'Marketplace', href: '/marketplace', icon: ShoppingCart, roles: ['farmer'] },
     { name: 'Analytics', href: '/analytics', icon: BarChart3, roles: ['farmer'] },
     { name: 'Advisory', href: '/advisory', icon: Bell, roles: ['farmer'] },

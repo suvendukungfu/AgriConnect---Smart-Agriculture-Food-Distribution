@@ -2,3 +2,8 @@ export * from './api';
 export * from './store';
 export * from './auth/auth.service';
 export * from './crops/crop.service';
+export * from './farms/farm.service';
+export * from './weather/weather.service';
+export * from './market/market.service';
+export * from './analytics/analytics.service';
+export * from './tasks/tasks.service';

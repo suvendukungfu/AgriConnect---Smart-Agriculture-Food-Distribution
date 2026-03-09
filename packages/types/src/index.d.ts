@@ -152,4 +152,23 @@ export interface Task {
     status: 'pending' | 'completed';
     category: 'irrigation' | 'fertilizer' | 'pest_control' | 'harvest';
 }
+export interface FarmSummary {
+    totalFarms: number;
+    activeCrops: number;
+    upcomingHarvests: number;
+    expectedProductionTons: number;
+}
+export interface CropHealthStatus {
+    cropName: string;
+    status: 'Healthy' | 'Warning' | 'Risk';
+    issue?: string;
+}
+export interface YieldPredictionData {
+    predictedYield: number;
+    confidenceScore: number;
+    history: Array<{
+        month: string;
+        yield: number;
+    }>;
+}
 //# sourceMappingURL=index.d.ts.map

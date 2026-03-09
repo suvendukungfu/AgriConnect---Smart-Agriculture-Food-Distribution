@@ -31,17 +31,23 @@ export const CropCard: React.FC<CropCardProps> = ({ crop, index = 0 }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1, duration: 0.3 }}
-      whileHover={{ y: -4 }}
+      variants={{
+        hidden: { opacity: 0, scale: 0.95, y: 20 },
+        show: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } }
+      }}
+      whileHover={{ y: -6, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       onClick={handleNavigate}
+      className="h-full"
     >
       <Card 
-        className="flex flex-col h-full overflow-hidden border-border transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 cursor-pointer group"
+        className="flex flex-col h-full overflow-hidden border-border/50 bg-card/60 backdrop-blur-xl transition-all duration-300 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/30 hover:bg-card/95 cursor-pointer group"
       >
-        <div className="p-5 flex-1">
-          <div className="flex justify-between items-start mb-4">
+        <div className="p-5 flex-1 relative overflow-hidden">
+          {/* Subtle glowing orb effect in the background */}
+          <div className={cn("absolute -top-10 -right-10 w-32 h-32 blur-3xl rounded-full opacity-20 group-hover:opacity-40 transition-opacity duration-500", stage.bg)} />
+          
+          <div className="flex justify-between items-start mb-4 relative z-10">
             <div className="flex items-center gap-3">
               <div className={cn("p-2.5 rounded-xl transition-colors duration-300", stage.bg, "group-hover:bg-primary/10")}>
                 <StageIcon className={cn("w-6 h-6", stage.color, "group-hover:text-primary")} />
@@ -57,8 +63,7 @@ export const CropCard: React.FC<CropCardProps> = ({ crop, index = 0 }) => {
                 </p>
               </div>
             </div>
-            
-            <ChevronRight className="w-5 h-5 text-muted-foreground/50 group-hover:text-primary transition-colors group-hover:translate-x-1" />
+            <ChevronRight className="w-5 h-5 text-muted-foreground/30 group-hover:text-primary transition-all duration-300 group-hover:translate-x-1.5" />
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-6">
@@ -82,7 +87,7 @@ export const CropCard: React.FC<CropCardProps> = ({ crop, index = 0 }) => {
           </div>
         </div>
 
-        <div className="px-5 py-4 border-t border-border bg-muted/20 flex items-center justify-between">
+        <div className="px-5 py-4 border-t border-border/50 bg-muted/10 backdrop-blur-md flex items-center justify-between group-hover:bg-muted/30 transition-colors">
           <div className="flex items-center gap-2">
             <div className="relative flex h-2.5 w-2.5 items-center justify-center">
               <span className={cn("absolute inline-flex h-full w-full rounded-full opacity-50", stage.bg)} />

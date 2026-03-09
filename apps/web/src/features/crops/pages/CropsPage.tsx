@@ -18,8 +18,8 @@ export const CropsPage: React.FC = () => {
   ) || [];
 
   return (
-    <div className="space-y-6 md:space-y-8 animate-in fade-in duration-500">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-6 md:space-y-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 animate-in slide-in-from-bottom-4 duration-500">
         <div>
           <h1 className="text-3xl font-black tracking-tighter text-foreground flex items-center gap-3">
             <Leaf className="w-8 h-8 text-primary" />
@@ -86,11 +86,24 @@ export const CropsPage: React.FC = () => {
       )}
 
       {!isLoading && !isError && filteredCrops.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 md:gap-6">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 md:gap-6"
+          initial="hidden"
+          animate="show"
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.1
+              }
+            }
+          }}
+        >
           {filteredCrops.map((crop, index) => (
             <CropCard key={crop.id} crop={crop} index={index} />
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );
