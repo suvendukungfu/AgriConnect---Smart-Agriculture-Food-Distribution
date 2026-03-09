@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from '@agriconnect/services';
 import { UserRole } from '@agriconnect/types';
 
 interface RoleGuardProps {
-  children: ReactNode;
+  children?: ReactNode;
   requiredRole: UserRole | UserRole[];
   redirectPath?: string;
 }
@@ -26,5 +26,5 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
     return <Navigate to={redirectPath} replace />;
   }
 
-  return <>{children}</>;
+  return children ? <>{children}</> : <Outlet />;
 };

@@ -8,9 +8,14 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 // Features (Standard lazy loading would be better, but keeping it direct for reliability now)
 import DashboardPage from '../features/dashboard/DashboardPage';
 import { FarmManagementPage } from '../features/farms/pages/FarmManagementPage';
-import { CropLifecyclePage } from '../features/farmer/pages/CropLifecyclePage';
 import { AnalyticsPage } from '../features/analytics/pages/AnalyticsPage';
 import { AdvisoryPage } from '../features/advisory/pages/AdvisoryPage';
+
+import { CropsPage } from '../features/crops/pages/CropsPage';
+import { CreateCropPage } from '../features/crops/pages/CreateCropPage';
+import { CropDetailsPage } from '../features/crops/pages/CropDetailsPage';
+import { CropEventsPage } from '../features/crops/pages/CropEventsPage';
+import { CreateEventPage } from '../features/crops/pages/CreateEventPage';
 
 export const AppRoutes: React.FC = () => {
   return (
@@ -34,7 +39,16 @@ export const AppRoutes: React.FC = () => {
         {/* Farmer Specific */}
         <Route element={<RoleGuard requiredRole={['farmer']} />}>
           <Route path="/farms" element={<FarmManagementPage />} />
-          <Route path="/crops" element={<CropLifecyclePage />} />
+          
+          {/* Crop Lifecycle System */}
+          <Route path="/crops">
+            <Route index element={<CropsPage />} />
+            <Route path="create" element={<CreateCropPage />} />
+            <Route path=":id" element={<CropDetailsPage />} />
+            <Route path=":id/events" element={<CropEventsPage />} />
+            <Route path=":id/events/create" element={<CreateEventPage />} />
+          </Route>
+
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/advisory" element={<AdvisoryPage />} />
           <Route path="/marketplace" element={<div className="p-10 text-center font-bold">Marketplace - Coming Soon</div>} />
@@ -47,7 +61,7 @@ export const AppRoutes: React.FC = () => {
         </Route>
 
         {/* Agronomist Specific */}
-        <Route element={<RoleGuard requiredRole={['agro']} />}>
+        <Route element={<RoleGuard requiredRole={['agronomist']} />}>
           <Route path="/farmers" element={<div className="p-10 text-center font-bold">Farmers Management - Coming Soon</div>} />
           <Route path="/advisory-queue" element={<div className="p-10 text-center font-bold">Advisory Queue - Coming Soon</div>} />
           <Route path="/risk-map" element={<div className="p-10 text-center font-bold">Risk Management Map - Coming Soon</div>} />

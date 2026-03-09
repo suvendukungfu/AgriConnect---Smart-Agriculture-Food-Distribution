@@ -24,7 +24,7 @@ export interface NavItem {
   roles: UserRole[];
 }
 
-export const NAVIGATION_CONFIG: Record<UserRole, NavItem[]> = {
+export const NAVIGATION_CONFIG: Record<Exclude<UserRole, null>, NavItem[]> = {
   farmer: [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['farmer'] },
     { name: 'My Farms', href: '/farms', icon: Tractor, roles: ['farmer'] },
@@ -42,13 +42,13 @@ export const NAVIGATION_CONFIG: Record<UserRole, NavItem[]> = {
     { name: 'Analytics', href: '/analytics', icon: BarChart3, roles: ['buyer'] },
     { name: 'Settings', href: '/settings', icon: Settings, roles: ['buyer'] },
   ],
-  agro: [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['agro'] },
-    { name: 'Farmers', href: '/farmers', icon: Users, roles: ['agro'] },
-    { name: 'Advisory Queue', href: '/advisory-queue', icon: Bell, roles: ['agro'] },
-    { name: 'Risk Map', href: '/risk-map', icon: Map, roles: ['agro'] },
-    { name: 'Analytics', href: '/analytics', icon: BarChart3, roles: ['agro'] },
-    { name: 'Settings', href: '/settings', icon: Settings, roles: ['agro'] },
+  agronomist: [
+    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['agronomist'] },
+    { name: 'Farmers', href: '/farmers', icon: Users, roles: ['agronomist'] },
+    { name: 'Advisory Queue', href: '/advisory-queue', icon: Bell, roles: ['agronomist'] },
+    { name: 'Risk Map', href: '/risk-map', icon: Map, roles: ['agronomist'] },
+    { name: 'Analytics', href: '/analytics', icon: BarChart3, roles: ['agronomist'] },
+    { name: 'Settings', href: '/settings', icon: Settings, roles: ['agronomist'] },
   ],
   admin: [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'super_admin'] },

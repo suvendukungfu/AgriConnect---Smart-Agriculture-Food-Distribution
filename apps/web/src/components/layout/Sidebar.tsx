@@ -8,6 +8,7 @@ import {
   X
 } from 'lucide-react';
 import { useAuthStore, authService } from '@agriconnect/services';
+import { UserRole } from '@agriconnect/types';
 import { cn, Button } from '@agriconnect/ui';
 import { motion } from 'framer-motion';
 import { NAVIGATION_CONFIG } from '../../config/navigation';
@@ -28,8 +29,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const { user, clearSession } = useAuthStore();
   const location = useLocation();
 
-  const role = user?.role || 'farmer';
-  const navigationItems = NAVIGATION_CONFIG[role as keyof typeof NAVIGATION_CONFIG] || [];
+  const role = (user?.role || 'farmer') as Exclude<UserRole, null>;
+  const navigationItems = NAVIGATION_CONFIG[role] || [];
 
   const handleLogout = async () => {
     try {
@@ -78,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Navigation Links */}
       <nav className="flex-1 space-y-1.5 overflow-y-auto overflow-x-hidden p-3 custom-scrollbar">
-        {navigationItems.map((item) => {
+        {navigationItems.map((item: any) => {
           const isActive = location.pathname === item.href;
           const Icon = item.icon;
           
