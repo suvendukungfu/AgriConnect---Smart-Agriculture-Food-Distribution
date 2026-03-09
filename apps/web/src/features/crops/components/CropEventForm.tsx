@@ -18,7 +18,14 @@ const EVENT_TYPES = [
 
 // We omit generated ids and dates that we might auto-fill, but let user pick date.
 const FormSchema = CropEventSchema.omit({ id: true, cropCycleId: true, images: true });
-type FormValues = z.infer<typeof FormSchema>;
+type FormValues = {
+  eventType: 'sowing' | 'irrigation' | 'fertilizer' | 'pesticide' | 'disease_report' | 'harvest';
+  date: string;
+  notes?: string;
+  quantity?: number;
+  cost?: number;
+  inputsUsed?: string;
+};
 
 interface CropEventFormProps {
   onSubmit: (data: FormValues, filePreviews: string[]) => void;
@@ -73,7 +80,7 @@ export const CropEventForm: React.FC<CropEventFormProps> = ({ onSubmit, isLoadin
                   key={type.id}
                   onClick={() => setValue('eventType', type.id as FormValues['eventType'], { shouldValidate: true })}
                   className={cn(
-                    "relative flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all duration-200 aspect-[4/3] sm:aspect-auto sm:h-24",
+                    "relative flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all duration-200 aspect-4/3 sm:aspect-auto sm:h-24",
                     isSelected 
                       ? `border-primary bg-primary/5 shadow-md ring-2 ring-primary/20`
                       : "border-border hover:border-primary/40 hover:bg-muted/50"
