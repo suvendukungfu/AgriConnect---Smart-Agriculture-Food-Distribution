@@ -137,3 +137,12 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Python cache artifacts
+__pycache__/
+*.pyc
+
+# Admin local transpile artifacts
+apps/admin/src/*.js
+apps/admin/src/*.d.ts
+apps/admin/src/*.d.ts.map
